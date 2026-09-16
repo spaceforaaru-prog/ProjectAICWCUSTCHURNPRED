@@ -406,3 +406,73 @@ if st.button("🔮 Predict Churn", use_container_width=True):
             "🟢 The model considers this customer to have "
             "a relatively low risk of churn."
         )
+
+# ==============================
+# EDA - Dataset Insights
+# ==============================
+
+st.markdown("---")
+st.header("📊 Dataset Insights")
+
+# Load dataset
+df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+
+# Convert TotalCharges to numeric
+df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+
+# Basic information
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("Total Customers", len(df))
+
+with col2:
+    churned = (df["Churn"] == "Yes").sum()
+    st.metric("Churned Customers", churned)
+
+with col3:
+    stayed = (df["Churn"] == "No").sum()
+    st.metric("Customers Stayed", stayed)
+
+
+# Churn Distribution
+st.subheader("Customer Churn Distribution")
+
+churn_counts = df["Churn"].value_counts()
+
+fig, ax = plt.subplots()
+ax.bar(churn_counts.index, churn_counts.values)
+ax.set_xlabel("Churn")
+ax.set_ylabel("Number of Customers")
+ax.set_title("Churned vs Stayed Customers")
+
+st.pyplot(fig)
+
+
+# Contract Type vs Churn
+st.subheader("Contract Type vs Churn")
+
+contract_churn = pd.crosstab(df["Contract"], df["Churn"])
+
+st.bar_chart(contract_churn)
+
+
+# Monthly Charges
+st.subheader("Monthly Charges")
+
+st.write(
+    "This shows the distribution of monthly charges paid by customers."
+)
+
+fig, ax = plt.subplots()
+ax.hist(df["MonthlyCharges"], bins=20)
+ax.set_xlabel("Monthly Charges")
+ax.set_ylabel("Number of Customers")
+ax.set_title("Distribution of Monthly Charges")
+
+st.pyplot(fig)        
+
+
+        
+        
+        
